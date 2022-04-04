@@ -1,6 +1,6 @@
 namespace Restaurant.Models;
 
-public class Cart
+public class CartItem
 {
     public int Id { get; set; }
     public int Quantity { get; set; }

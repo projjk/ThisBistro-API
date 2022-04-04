@@ -86,4 +86,16 @@ public class Repository : IRepository
         _logger.LogInformation($"Getting an Order #{id}");
         return await _context.Orders.FindAsync(id);
     }
+    public async Task<ActionResult<IEnumerable<CartItem>>> GetAllCartsAsync()
+    {
+        _logger.LogInformation("Getting all Carts");
+
+        return await _context.Carts.Include(c => c.Menu).ToArrayAsync();
+    }
+
+    public async Task<CartItem?> GetCartItemAsync(int id)
+    {
+        _logger.LogInformation($"Getting a CartItem #{id}");
+        return await _context.Carts.Include(c => c.Menu).FirstAsync(c => c.Id == id);
+    }
 }

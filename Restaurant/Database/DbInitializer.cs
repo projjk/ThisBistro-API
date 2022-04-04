@@ -33,18 +33,18 @@ public static class DbInitializer
             }
             context.SaveChanges();
             
-            var Carts = new Cart[]
+            var carts = new CartItem[]
             {
-                new Cart
+                new CartItem
                 {
                     Menu = Menus[0], Quantity = 2
                 },
-                new Cart
+                new CartItem
                 {
                     Menu = Menus[1], Quantity = 4
                 }
             };
-            foreach (Cart s in Carts)
+            foreach (CartItem s in carts)
             {
                 context.Carts.Add(s);
             }

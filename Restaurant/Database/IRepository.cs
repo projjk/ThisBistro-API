@@ -19,4 +19,7 @@ public interface IRepository
 
     Task<ActionResult<IEnumerable<Order>>> GetAllOrdersAsync();
     Task<Order?> GetOrderAsync(int id);
+    Task<ActionResult<IEnumerable<CartItem>>> GetAllCartsAsync();
+    Task<CartItem?> GetCartItemAsync(int id);
+
 }

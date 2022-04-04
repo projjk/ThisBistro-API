@@ -18,5 +18,9 @@ public class MenuProfile : Profile
             .ReverseMap();
         CreateMap<PutOrderViewModel, Order>()
             .ReverseMap();
+        CreateMap<PostCartItemViewModel, CartItem>()
+            .ReverseMap();
+        CreateMap<PutCartItemViewModel, CartItem>()
+            .ReverseMap();
     }
 }

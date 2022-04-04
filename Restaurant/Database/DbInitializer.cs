@@ -48,6 +48,23 @@ public static class DbInitializer
             {
                 context.Carts.Add(s);
             }
+            context.SaveChanges();      
+            
+            var categories = new Category[]
+            {
+                new Category
+                {
+                    Name = "Category1"
+                },
+                new Category
+                {
+                    Name = "Category2"
+                }
+            };
+            foreach (Category s in categories)
+            {
+                context.Categories.Add(s);
+            }
             context.SaveChanges();
         }
     }

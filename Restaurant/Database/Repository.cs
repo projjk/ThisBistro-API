@@ -73,4 +73,17 @@ public class Repository : IRepository
         var category = _context.Categories.FirstOrDefaultAsync(c => c.Menus.Contains(menu));
         return category;
     }
+
+    public async Task<ActionResult<IEnumerable<Order>>> GetAllOrdersAsync()
+    {
+        _logger.LogInformation("Getting all Orders");
+
+        return await _context.Orders.ToArrayAsync();
+    }
+
+    public async Task<Order?> GetOrderAsync(int id)
+    {
+        _logger.LogInformation($"Getting an Order #{id}");
+        return await _context.Orders.FindAsync(id);
+    }
 }

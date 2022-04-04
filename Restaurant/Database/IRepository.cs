@@ -17,4 +17,6 @@ public interface IRepository
     
     Task<Category?> FindCategory(Menu menu);
 
+    Task<ActionResult<IEnumerable<Order>>> GetAllOrdersAsync();
+    Task<Order?> GetOrderAsync(int id);
 }

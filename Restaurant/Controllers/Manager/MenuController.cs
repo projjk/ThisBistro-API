@@ -88,7 +88,6 @@ namespace Restaurant.Controllers.Manager
         }
 
         // POST: api/manager/menu
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Menu>> PostMenu(PostMenuViewModel postMenu)
         {
@@ -137,10 +136,7 @@ namespace Restaurant.Controllers.Manager
                 {
                     return Ok();
                 }
-                else
-                {
-                    return BadRequest("Failed to delete the menu");
-                }
+                return BadRequest("Failed to delete the menu");
             }
             catch (Exception)
             {

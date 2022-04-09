@@ -32,13 +32,14 @@ public static class DbInitializer
                 context.Menus.Add(s);
             }
             context.SaveChanges();
+            var cart1 = new CartItem
+            {
+                Menu = Menus[0], Quantity = 2
+            };
             
             var carts = new CartItem[]
             {
-                new CartItem
-                {
-                    Menu = Menus[0], Quantity = 2
-                },
+                cart1,
                 new CartItem
                 {
                     Menu = Menus[1], Quantity = 4
@@ -48,8 +49,14 @@ public static class DbInitializer
             {
                 context.Carts.Add(s);
             }
-            context.SaveChanges();      
-            
+            context.SaveChanges();
+
+            context.Users.Add(new User()
+            {
+                Auth0Id = Guid.Parse("55543fb9-7554-4213-80c5-4edfacecdd72"),
+                Carts = new List<CartItem> { cart1 }
+            });
+
             var categories = new Category[]
             {
                 new Category

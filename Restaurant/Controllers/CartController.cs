@@ -68,7 +68,9 @@ namespace Restaurant.Controllers
                 var newCart = _mapper.Map<CartItem>(cart);
                 newCart.Menu = menu;
                 _repository.Add(newCart);
-                // @todo register this to user's carts collection
+                /*@todo register this to the current user's carts collection
+                var user = new User(); // @todo should get the current user
+                user.Carts.Add(newCart);*/
 
                 if (await _repository.SaveChangesAsync())
                 {

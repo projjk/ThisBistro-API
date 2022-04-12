@@ -1,6 +1,6 @@
 using Restaurant.Models;
 
-namespace Restaurant.ViewModels;
+namespace Restaurant.ViewModels.Manager;
 
 public class PutOrderViewModel
 {

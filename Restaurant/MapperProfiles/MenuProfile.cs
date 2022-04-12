@@ -1,6 +1,7 @@
 using AutoMapper;
 using Restaurant.Models;
 using Restaurant.ViewModels;
+using Restaurant.ViewModels.Manager;
 
 namespace Restaurant.MapperProfiles;
 
@@ -23,6 +24,14 @@ public class MenuProfile : Profile
         CreateMap<PutCartItemViewModel, CartItem>()
             .ReverseMap();
         CreateMap<CartItem, GetCartItemViewModel>()
+            .ReverseMap();
+        CreateMap<OrderItem, GetOrderItemViewModel>()
+            .ReverseMap();
+        CreateMap<Order, GetOrderViewModel>()
+            .ForMember(o => o.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
+            .ReverseMap();
+        CreateMap<CartItem, OrderItem>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ReverseMap();
     }
 }

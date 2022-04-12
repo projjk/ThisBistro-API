@@ -1,8 +1,7 @@
-namespace Restaurant.ViewModels;
+namespace Restaurant.ViewModels.Manager;
 
-public class PutMenuViewModel
+public class PostMenuViewModel
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public string? Description { get; set; }
     public decimal Price { get; set; }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurant.Database;
 using Restaurant.Models;
 using Restaurant.ViewModels;
+using Restaurant.ViewModels.Manager;
 
 namespace Restaurant.Controllers.Manager
 {

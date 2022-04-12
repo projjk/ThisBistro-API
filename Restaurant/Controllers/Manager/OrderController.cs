@@ -7,9 +7,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using Restaurant.Database;
 using Restaurant.Models;
 using Restaurant.ViewModels;
+using Restaurant.ViewModels.Manager;
 
 namespace Restaurant.Controllers.Manager
 {
@@ -28,14 +30,15 @@ namespace Restaurant.Controllers.Manager
 
         // GET: api/manager/order
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<GetOrderViewModel>>> GetOrders()
         {
-            return Ok(await _repository.GetAllOrdersAsync());
+            var orders = await _repository.GetAllOrdersAsync();
+            return Ok(_mapper.Map<GetOrderViewModel[]>(orders));
         }
 
         // GET: api/manager/order/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<ActionResult<GetOrderViewModel>> GetOrder(int id)
         {
             var order = await _repository.GetOrderAsync(id);
 
@@ -44,13 +47,56 @@ namespace Restaurant.Controllers.Manager
                 return NotFound();
             }
 
-            return order;
+            return _mapper.Map<GetOrderViewModel>(order);
         }
+        
+        // POST: api/manager/order
+        // Gets only memo from the frontend. Make Order from current user's CartItems.
+        [HttpPost]
+        public async Task<ActionResult<GetOrderViewModel>> PostOrder(PostOrderViewModel postOrder)
+        {
+            try
+            {
+                var user = await _repository.GetUserAsync(new Guid("0736c8d1-e45a-4ae8-8f93-b23bda993728")); // @todo should be changed to fetch current user after implementing auth0
 
+                if (user.CartItems.Count < 1)
+                {
+                    return NoContent();
+                }
+
+                var order = new Order { Status = 0, Date = DateTime.UtcNow, User = user };
+                _repository.Add(order);
+
+                if (!string.IsNullOrWhiteSpace(postOrder.Memo))
+                {
+                    order.Memo = postOrder.Memo;
+                }
+
+                foreach (var cartItem in user.CartItems)
+                {
+                    var orderItem = _mapper.Map<OrderItem>(cartItem);
+                    orderItem.Order = order;
+                    _repository.Add(orderItem);
+
+                    order.Price += orderItem.Menu.Price * orderItem.Quantity;
+                }
+  
+                if (await _repository.SaveChangesAsync())
+                {
+                    return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, _mapper.Map<GetOrderViewModel>(order));
+                }
+                return BadRequest("Failed to save new Order");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to save new Order");
+            }
+        }
+        
         // PUT: api/manager/order/5
         // Only used for changing status
         [HttpPut("{id}")]
-        public async Task<ActionResult<Order>> PutOrder(int id, PutOrderViewModel order)
+        public async Task<ActionResult<GetOrderViewModel>> PutOrder(int id, PutOrderViewModel order)
         {
             try
             {
@@ -64,11 +110,16 @@ namespace Restaurant.Controllers.Manager
                 {
                     return NoContent();
                 }
+
+                if (!Enum.IsDefined(typeof(Order.OrderStatusEnum), order.Status) )
+                {
+                    return BadRequest("status: out of range");
+                }
                 
                 _mapper.Map(order, oldOrder);
                 if (await _repository.SaveChangesAsync())
                 {
-                    return oldOrder;
+                    return _mapper.Map<GetOrderViewModel>(oldOrder);
                 }
                 return BadRequest("Failed to update database");
             }

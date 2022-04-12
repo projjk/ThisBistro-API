@@ -35,6 +35,14 @@ public class Repository : IRepository
         return (await _context.SaveChangesAsync()) > 0;
     }
 
+    public async Task<User?> GetUserAsync(Guid guid)
+    {
+        return await _context.Users
+            .Include(u => u.CartItems).ThenInclude(c => c.Menu)
+            .Include(u => u.Orders)
+            .FirstOrDefaultAsync(u => u.Id == guid);
+    }
+
     public async Task<IEnumerable<Menu>> GetAllMenusAsync()
     {
         _logger.LogInformation("Getting all Menus");
@@ -78,13 +86,13 @@ public class Repository : IRepository
     {
         _logger.LogInformation("Getting all Orders");
 
-        return await _context.Orders.ToArrayAsync();
+        return await _context.Orders.Include(o => o.OrderItems).ToArrayAsync();
     }
 
     public async Task<Order?> GetOrderAsync(int id)
     {
         _logger.LogInformation($"Getting an Order #{id}");
-        return await _context.Orders.FindAsync(id);
+        return await _context.Orders.Include(o => o.OrderItems).ThenInclude(oi => oi.Menu).FirstOrDefaultAsync(o => o.Id == id);
     }
     public async Task<IEnumerable<CartItem>> GetAllCartsAsync()
     {

@@ -8,6 +8,8 @@ public interface IRepository
     void Add<T>(T entity) where T : class;
     void Remove<T>(T entity) where T : class;
     Task<bool> SaveChangesAsync();
+
+    Task<User?> GetUserAsync(Guid guid);
     Task<IEnumerable<Menu>> GetAllMenusAsync();
     Task<Menu?> GetMenuAsync(int menuNo);
     Task<Category?> GetCategoryAsync(int categoryNo);

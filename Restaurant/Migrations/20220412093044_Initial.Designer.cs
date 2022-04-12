@@ -12,7 +12,7 @@ using Restaurant.Database;
 namespace Restaurant.Migrations
 {
     [DbContext(typeof(ManagerDbContext))]
-    [Migration("20220412044458_Initial")]
+    [Migration("20220412093044_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,9 @@ namespace Restaurant.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Arrangement")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()

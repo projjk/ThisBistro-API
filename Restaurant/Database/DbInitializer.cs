@@ -20,8 +20,8 @@ public static class DbInitializer
             context.Users.Add(user);
 
             // Seeding Categories
-            var category1 = new Category { Name = "Category1" };
-            var category2 = new Category { Name = "Category2" };
+            var category1 = new Category { Name = "Category1", Arrangement = 1 };
+            var category2 = new Category { Name = "Category2", Arrangement = 2 };
             context.Categories.AddRange(category1, category2);
 
             // Seeding Menus

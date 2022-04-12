@@ -3,8 +3,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Database;
 using Restaurant.Models;
-using Restaurant.ViewModels;
 using Restaurant.ViewModels.Manager;
+using GetMenuViewModel = Restaurant.ViewModels.Manager.GetMenuViewModel;
 
 namespace Restaurant.Controllers.Manager
 {
@@ -25,12 +25,12 @@ namespace Restaurant.Controllers.Manager
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Menu>>> GetMenus()
         {
-            return Ok(await _repository.GetAllMenusAsync());
+            return Ok(_mapper.Map<GetMenuViewModel[]>(await _repository.GetAllMenusAsync()));
         }
 
         // GET: api/manager/menu/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Menu>> GetMenu(int id)
+        public async Task<ActionResult<GetMenuViewModel>> GetMenu(int id)
         {
             var menu = await _repository.GetMenuAsync(id);
 
@@ -39,12 +39,12 @@ namespace Restaurant.Controllers.Manager
                 return NotFound();
             }
 
-            return menu;
+            return _mapper.Map<GetMenuViewModel>(menu);
         }
 
         // PUT: api/manager/menu/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<Menu>> PutMenu(int id, PutMenuViewModel menu)
+        public async Task<ActionResult<GetMenuViewModel>> PutMenu(int id, PutMenuViewModel menu)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace Restaurant.Controllers.Manager
                 _mapper.Map(menu, oldMenu);
                 if (await _repository.SaveChangesAsync())
                 {
-                    return oldMenu;
+                    return _mapper.Map<GetMenuViewModel>(oldMenu);
                 }
                 return BadRequest("Failed to update database");
             }
@@ -90,7 +90,7 @@ namespace Restaurant.Controllers.Manager
 
         // POST: api/manager/menu
         [HttpPost]
-        public async Task<ActionResult<Menu>> PostMenu(PostMenuViewModel postMenu)
+        public async Task<ActionResult<GetMenuViewModel>> PostMenu(PostMenuViewModel postMenu)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace Restaurant.Controllers.Manager
 
                 if (await _repository.SaveChangesAsync())
                 {
-                    return CreatedAtAction(nameof(GetMenu), new { id = menu.Id }, menu);
+                    return CreatedAtAction(nameof(GetMenu), new { id = menu.Id }, _mapper.Map<GetMenuViewModel>(menu));
                 }
                 return BadRequest("Failed to save new Menu");
             }

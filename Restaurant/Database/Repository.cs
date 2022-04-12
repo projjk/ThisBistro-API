@@ -47,19 +47,25 @@ public class Repository : IRepository
     {
         _logger.LogInformation("Getting all Menus");
 
-        return await _context.Menus.ToArrayAsync();
+        return await _context.Menus
+            .Include(m => m.Category)
+            .ToArrayAsync();
     }
 
     public async Task<Menu?> GetMenuAsync(int menuNo)
     {
         _logger.LogInformation($"Getting a Menu #{menuNo}");
-        return await _context.Menus.FindAsync(menuNo);
+        return await _context.Menus
+            .Include(m => m.Category)
+            .FirstOrDefaultAsync(m => m.Id == menuNo);
     }
 
     public async Task<Category?> GetCategoryAsync(int categoryNo)
     {
         _logger.LogInformation($"Getting a Category #{categoryNo}");
-        return await _context.Categories.FindAsync(categoryNo);
+        return await _context.Categories
+            .Include(c => c.Menus)
+            .FirstOrDefaultAsync(c => c.Id == categoryNo);
     }
 
     public void ChangeEntrySate(object entity)

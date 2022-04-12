@@ -28,15 +28,15 @@ namespace Restaurant.Controllers
 
         // GET: api/cart
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CartItem>>> GetCarts()
+        public async Task<ActionResult<IEnumerable<GetCartItemViewModel>>> GetCarts()
         {
             // @todo return only the user's own carts.
-            return await _repository.GetAllCartsAsync();
+            return _mapper.Map<GetCartItemViewModel[]>(await _repository.GetAllCartsAsync());
         }
 
         // GET: api/cart/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CartItem>> GetCart(int id)
+        public async Task<ActionResult<GetCartItemViewModel>> GetCart(int id)
         {
             var cart = await _repository.GetCartItemAsync(id);
 
@@ -45,7 +45,7 @@ namespace Restaurant.Controllers
                 return NotFound();
             }
 
-            return cart;
+            return _mapper.Map<GetCartItemViewModel>(cart);
         }
 
         // POST: api/cart

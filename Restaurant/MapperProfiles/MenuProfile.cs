@@ -8,7 +8,7 @@ public class MenuProfile : Profile
 {
     public MenuProfile()
     {
-        CreateMap<Menu, MenuViewModel>()
+        CreateMap<Menu, GetMenuViewModel>()
             .ReverseMap();
         CreateMap<PostMenuViewModel, Menu>()
             .ReverseMap();
@@ -21,6 +21,8 @@ public class MenuProfile : Profile
         CreateMap<PostCartItemViewModel, CartItem>()
             .ReverseMap();
         CreateMap<PutCartItemViewModel, CartItem>()
+            .ReverseMap();
+        CreateMap<CartItem, GetCartItemViewModel>()
             .ReverseMap();
     }
 }

@@ -7,5 +7,7 @@ public partial class Order
     public decimal Price { get; set; }
     public DateTime Date { get; set; }
     public string? Memo { get; set; }
-    public ICollection<OrderItem> Items { get; set; }
+    public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public Guid UserId { get; set; } // Foreign key
+    public User User { get; set; } = null!; // Inverse navigation property
 }

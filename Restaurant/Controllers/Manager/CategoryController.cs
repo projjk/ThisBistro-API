@@ -24,7 +24,7 @@ namespace Restaurant.Controllers.Manager
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            return await _repository.GetAllCategoriesAsync();
+            return Ok(await _repository.GetAllCategoriesAsync());
         }
 
         // GET: api/manager/category/5

@@ -21,15 +21,15 @@ namespace Restaurant.Controllers
 
         // GET: api/Menu
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MenuViewModel>>> GetMenus()
+        public async Task<ActionResult<IEnumerable<GetMenuViewModel>>> GetMenus()
         {
             var results = await _repository.GetAllMenusAsync();
-            return _mapper.Map<MenuViewModel[]>(results);
+            return _mapper.Map<GetMenuViewModel[]>(results);
         }
 
         // GET: api/Menu/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MenuViewModel>> GetMenu(int id)
+        public async Task<ActionResult<GetMenuViewModel>> GetMenu(int id)
         {
             var menu = await _repository.GetMenuAsync(id);
 
@@ -38,7 +38,7 @@ namespace Restaurant.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<MenuViewModel>(menu);
+            return _mapper.Map<GetMenuViewModel>(menu);
         }
     }
 }

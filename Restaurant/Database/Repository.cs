@@ -35,7 +35,7 @@ public class Repository : IRepository
         return (await _context.SaveChangesAsync()) > 0;
     }
 
-    public async Task<ActionResult<IEnumerable<Menu>>> GetAllMenusAsync()
+    public async Task<IEnumerable<Menu>> GetAllMenusAsync()
     {
         _logger.LogInformation("Getting all Menus");
 
@@ -59,7 +59,7 @@ public class Repository : IRepository
         _context.Entry(entity).State = EntityState.Modified;
     }
 
-    public async Task<ActionResult<IEnumerable<Category>>> GetAllCategoriesAsync()
+    public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
     {
         _logger.LogInformation("Getting all Categories");
 
@@ -74,7 +74,7 @@ public class Repository : IRepository
         return category;
     }
 
-    public async Task<ActionResult<IEnumerable<Order>>> GetAllOrdersAsync()
+    public async Task<IEnumerable<Order>> GetAllOrdersAsync()
     {
         _logger.LogInformation("Getting all Orders");
 
@@ -86,17 +86,20 @@ public class Repository : IRepository
         _logger.LogInformation($"Getting an Order #{id}");
         return await _context.Orders.FindAsync(id);
     }
-    public async Task<ActionResult<IEnumerable<CartItem>>> GetAllCartsAsync()
+    public async Task<IEnumerable<CartItem>> GetAllCartsAsync()
     {
         _logger.LogInformation("Getting all Carts");
 
-        return await _context.Carts.Include(c => c.Menu).ToArrayAsync();
+        return await _context.CartItems.Include(c => c.Menu).ToArrayAsync();
     }
 
     public async Task<CartItem?> GetCartItemAsync(int id)
     {
         _logger.LogInformation($"Getting a CartItem #{id}");
-        return await _context.Carts.Include(c => c.Menu).FirstAsync(c => c.Id == id);
+        return await _context.CartItems
+            .Include(c => c.Menu)
+            .Include(c => c.User)
+            .FirstAsync(c => c.Id == id);
     }
     
 }

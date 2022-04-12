@@ -24,7 +24,7 @@ namespace Restaurant.Controllers.Manager
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Menu>>> GetMenus()
         {
-            return await _repository.GetAllMenusAsync();
+            return Ok(await _repository.GetAllMenusAsync());
         }
 
         // GET: api/manager/menu/5

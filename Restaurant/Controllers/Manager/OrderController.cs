@@ -30,7 +30,7 @@ namespace Restaurant.Controllers.Manager
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return await _repository.GetAllOrdersAsync();
+            return Ok(await _repository.GetAllOrdersAsync());
         }
 
         // GET: api/manager/order/5

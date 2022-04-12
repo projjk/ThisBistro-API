@@ -12,6 +12,7 @@ public class ManagerDbContext : DbContext
     public DbSet<CartItem> CartItems { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
     private DbSet<RestaurantConfig> RestaurantConfigs { get; set; } = null!;
+
     public ManagerDbContext(DbContextOptions<ManagerDbContext> options)
         : base(options)
     {
@@ -27,7 +28,6 @@ public class ManagerDbContext : DbContext
             {
                 tmp = new RestaurantConfig();
                 RestaurantConfigs.Add(tmp);
-                SaveChanges();
             }
 
             return tmp;

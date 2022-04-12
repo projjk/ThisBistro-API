@@ -19,5 +19,8 @@ public class GeneralProfile : Profile
         CreateMap<CartItem, OrderItem>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ReverseMap();
+        CreateMap<Order, GetOrderViewModel>()
+            .ForMember(o => o.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
+            .ReverseMap();
     }
 }

@@ -1,16 +1,8 @@
 #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol;
 using Restaurant.Database;
 using Restaurant.Models;
-using Restaurant.ViewModels;
 using Restaurant.ViewModels.Manager;
 
 namespace Restaurant.Controllers.Manager
@@ -48,49 +40,6 @@ namespace Restaurant.Controllers.Manager
             }
 
             return _mapper.Map<GetOrderViewModel>(order);
-        }
-        
-        // POST: api/manager/order
-        // Gets only memo from the frontend. Make Order from current user's CartItems.
-        [HttpPost]
-        public async Task<ActionResult<GetOrderViewModel>> PostOrder(PostOrderViewModel postOrder)
-        {
-            try
-            {
-                var user = await _repository.GetUserAsync(new Guid("0736c8d1-e45a-4ae8-8f93-b23bda993728")); // @todo should be changed to fetch current user after implementing auth0
-
-                if (user.CartItems.Count < 1)
-                {
-                    return NoContent();
-                }
-
-                var order = new Order { Status = 0, Date = DateTime.UtcNow, User = user };
-                _repository.Add(order);
-
-                if (!string.IsNullOrWhiteSpace(postOrder.Memo))
-                {
-                    order.Memo = postOrder.Memo;
-                }
-
-                foreach (var cartItem in user.CartItems)
-                {
-                    var orderItem = _mapper.Map<OrderItem>(cartItem);
-                    orderItem.Order = order;
-                    _repository.Add(orderItem);
-
-                    order.Price += orderItem.Menu.Price * orderItem.Quantity;
-                }
-  
-                if (await _repository.SaveChangesAsync())
-                {
-                    return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, _mapper.Map<GetOrderViewModel>(order));
-                }
-                return BadRequest("Failed to save new Order");
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to save new Order");
-            }
         }
         
         // PUT: api/manager/order/5

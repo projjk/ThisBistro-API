@@ -1,16 +1,9 @@
 #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Restaurant.Database;
 using Restaurant.Models;
 using Restaurant.ViewModels;
-using Restaurant.ViewModels.Manager;
 
 namespace Restaurant.Controllers
 {
@@ -29,14 +22,15 @@ namespace Restaurant.Controllers
 
         // GET: api/order
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<GetOrderViewModel>>> GetOrders()
         {
-            return Ok(await _repository.GetAllOrdersAsync());
+            var orders = await _repository.GetAllOrdersAsync();
+            return Ok(_mapper.Map<GetOrderViewModel[]>(orders));
         }
 
         // GET: api/order/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<ActionResult<GetOrderViewModel>> GetOrder(int id)
         {
             var order = await _repository.GetOrderAsync(id);
 
@@ -45,62 +39,50 @@ namespace Restaurant.Controllers
                 return NotFound();
             }
 
-            return order;
+            return _mapper.Map<GetOrderViewModel>(order);
         }
-
-        // PUT: api/order/5
-        // Only used for changing status
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Order>> PutOrder(int id, PutOrderViewModel order)
+        
+        // POST: api/order
+        // Gets only memo from the frontend. Make Order from current user's CartItems.
+        [HttpPost]
+        public async Task<ActionResult<GetOrderViewModel>> PostOrder(Restaurant.ViewModels.Manager.PostOrderViewModel postOrder)
         {
             try
             {
-                if (id != order.Id)
-                {
-                    return BadRequest("Id doesn't match");
-                }
-
-                var oldOrder = await _repository.GetOrderAsync(id);
-                if (oldOrder == null)
+                var user = await _repository.GetUserAsync(new Guid("51e68b27-494a-4927-a2f2-18cbbd5c8975")); // @todo should be changed to fetch current user after implementing auth0
+                
+                if (user.CartItems.Count < 1)
                 {
                     return NoContent();
                 }
-                
-                _mapper.Map(order, oldOrder);
+
+                var order = new Order { Status = 0, Date = DateTime.UtcNow, User = user };
+                _repository.Add(order);
+
+                if (!string.IsNullOrWhiteSpace(postOrder.Memo))
+                {
+                    order.Memo = postOrder.Memo;
+                }
+
+                foreach (var cartItem in user.CartItems)
+                {
+                    var orderItem = _mapper.Map<OrderItem>(cartItem);
+                    orderItem.Order = order;
+                    _repository.Add(orderItem);
+
+                    order.Price += orderItem.Menu.Price * orderItem.Quantity;
+                }
+                user.CartItems.Clear();
+  
                 if (await _repository.SaveChangesAsync())
                 {
-                    return oldOrder;
+                    return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, _mapper.Map<GetOrderViewModel>(order));
                 }
-                return BadRequest("Failed to update database");
+                return BadRequest("Failed to save new Order");
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to put Order");
-            }
-        }
-
-        // DELETE: api/order/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            try
-            {
-                var order = await _repository.GetOrderAsync(id);
-                if (order == null)
-                {
-                    return NotFound("Failed to find the order to delete");
-                }
-                _repository.Remove(order);
-
-                if (await _repository.SaveChangesAsync())
-                {
-                    return Ok();
-                }
-                return BadRequest("Failed to delete the order");
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to delete the order");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to save new Order");
             }
         }
     }

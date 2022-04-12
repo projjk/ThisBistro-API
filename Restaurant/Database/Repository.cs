@@ -49,6 +49,7 @@ public class Repository : IRepository
 
         return await _context.Menus
             .Include(m => m.Category)
+            .OrderBy(m => m.Arrangement)
             .ToArrayAsync();
     }
 

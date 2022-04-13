@@ -23,5 +23,5 @@ public interface IRepository
     Task<Order?> GetOrderAsync(int id);
     Task<IEnumerable<CartItem>> GetAllCartsAsync();
     Task<CartItem?> GetCartItemAsync(int id);
-
+    Task<RestaurantConfig?> GetConfigAsync();
 }

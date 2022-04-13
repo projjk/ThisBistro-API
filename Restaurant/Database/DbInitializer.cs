@@ -51,7 +51,7 @@ public static class DbInitializer
             context.OrderItems.AddRange(orderItem1, orderItem2);
 
             // Seeding RestaurantConfig
-            context.RestaurantConfig.IsOpen = false;
+            context.RestaurantConfigs.Add(new RestaurantConfig());
             context.SaveChanges();
         }
     }

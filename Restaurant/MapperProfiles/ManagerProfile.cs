@@ -22,6 +22,10 @@ public class ManagerProfile : Profile
         CreateMap<Order, GetOrderViewModel>()
             .ForMember(o => o.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
             .ReverseMap();
+        CreateMap<RestaurantConfig, RestaurantConfigViewModel>()
+            .ReverseMap()
+            .ForMember(o => o.OpenHour, opt => opt.Ignore())
+            .ForMember(o => o.CloseHour, opt => opt.Ignore());
 
     }
 }

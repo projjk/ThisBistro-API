@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using Restaurant.Models;
 
 namespace Restaurant.Database;
@@ -116,5 +117,10 @@ public class Repository : IRepository
             .Include(c => c.User)
             .FirstAsync(c => c.Id == id);
     }
-    
+
+    public async Task<RestaurantConfig?> GetConfigAsync()
+    {
+        _logger.LogInformation($"Getting a RestaurantConfig");
+        return await _context.RestaurantConfigs.FirstOrDefaultAsync();
+    }
 }

@@ -79,7 +79,7 @@ public class Repository : IRepository
     {
         _logger.LogInformation("Getting all Categories");
 
-        return await _context.Categories.ToArrayAsync();
+        return await _context.Categories.OrderBy(c => c.Arrangement).ToArrayAsync();
 
     }
 

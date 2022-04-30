@@ -44,7 +44,7 @@ namespace Restaurant.Controllers.Manager
                 var oldConfig = await _repository.GetConfigAsync();
                 if (oldConfig == null)
                 {
-                    return NoContent();
+                    return NotFound();
                 }
 
                 _mapper.Map(postConfig, oldConfig);

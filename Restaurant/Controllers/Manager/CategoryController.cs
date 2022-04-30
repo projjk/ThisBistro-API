@@ -56,7 +56,7 @@ namespace Restaurant.Controllers.Manager
                 var oldCategory = await _repository.GetCategoryAsync(id);
                 if (oldCategory == null)
                 {
-                    return NoContent();
+                    return NotFound();
                 }
 
                 _mapper.Map(postCategory, oldCategory);

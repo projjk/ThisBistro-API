@@ -111,7 +111,7 @@ namespace Restaurant.Controllers
                 var oldCart = await _repository.GetCartItemAsync(id);
                 if (oldCart == null)
                 {
-                    return NoContent();
+                    return NotFound();
                 }
 
                 if (cart.Quantity < 1)

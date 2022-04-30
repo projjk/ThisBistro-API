@@ -56,7 +56,7 @@ namespace Restaurant.Controllers.Manager
                 var oldMenu = await _repository.GetMenuAsync(id);
                 if (oldMenu == null)
                 {
-                    return NoContent();
+                    return NotFound();
                 }
 
                 // remove from the previous category

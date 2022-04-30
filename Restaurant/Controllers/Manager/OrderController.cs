@@ -57,7 +57,7 @@ namespace Restaurant.Controllers.Manager
                 var oldOrder = await _repository.GetOrderAsync(id);
                 if (oldOrder == null)
                 {
-                    return NoContent();
+                    return NotFound();
                 }
 
                 if (!Enum.IsDefined(typeof(Order.OrderStatusEnum), order.Status) )

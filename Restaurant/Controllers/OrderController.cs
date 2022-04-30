@@ -49,11 +49,12 @@ namespace Restaurant.Controllers
         {
             try
             {
-                var user = await _repository.GetUserAsync(new Guid("51e68b27-494a-4927-a2f2-18cbbd5c8975")); // @todo should be changed to fetch current user after implementing auth0
+                //var user = await _repository.GetUserAsync(new Guid("51e68b27-494a-4927-a2f2-18cbbd5c8975")); // @todo should be changed to fetch current user after implementing auth0
+                var user = await _repository.GetUserAsync(new Guid("9bac3a17-e096-4467-84ed-5790e26beb45")); // @todo should be changed to fetch current user after implementing auth0
                 
                 if (user.CartItems.Count < 1)
                 {
-                    return NoContent();
+                    return NotFound();
                 }
 
                 var order = new Order { Status = 0, Date = DateTime.UtcNow, User = user };

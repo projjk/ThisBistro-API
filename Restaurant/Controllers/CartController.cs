@@ -50,7 +50,7 @@ namespace Restaurant.Controllers
 
         // POST: api/cart
         [HttpPost]
-        public async Task<ActionResult<CartItem>> PostCart(PostCartItemViewModel cart)
+        public async Task<ActionResult<GetCartItemViewModel>> PostCart(PostCartItemViewModel cart)
         {
             try
             {
@@ -60,21 +60,21 @@ namespace Restaurant.Controllers
                     return BadRequest("Menu doesn't exist");
                 }
 
-                if (cart.Quantity < 1)
-                {
-                    return BadRequest("Quantity must be greater than 0");
-                }
-
                 var newCart = _mapper.Map<CartItem>(cart);
                 newCart.Menu = menu;
+                newCart.Quantity = 1;
                 _repository.Add(newCart);
-                /*@todo register this to the current user's carts collection
-                var user = new User(); // @todo should get the current user
-                user.Carts.Add(newCart);*/
+                //////////////@todo register this to the current user's carts collection
+                var user = await _repository.GetUserAsync(new Guid("9bac3a17-e096-4467-84ed-5790e26beb45")); // @todo should get the current user
+                if (user == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Unable to find the user");
+                }
+                user.CartItems.Add(newCart);
 
                 if (await _repository.SaveChangesAsync())
                 {
-                    return CreatedAtAction(nameof(GetCart), new { id = newCart.Id }, newCart);
+                    return CreatedAtAction(nameof(GetCart), new { id = newCart.Id }, _mapper.Map<GetCartItemViewModel>(newCart));
                 }
                 return BadRequest("Failed to save new Cart");
             }
@@ -87,7 +87,7 @@ namespace Restaurant.Controllers
         // PUT: api/cart/5
         // Only used for changing quantity
         [HttpPut("{id}")]
-        public async Task<ActionResult<CartItem>> PutCart(int id, PutCartItemViewModel cart)
+        public async Task<ActionResult<GetCartItemViewModel>> PutCart(int id, PutCartItemViewModel cart)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace Restaurant.Controllers
                 _mapper.Map(cart, oldCart);
                 if (await _repository.SaveChangesAsync())
                 {
-                    return oldCart;
+                    return _mapper.Map<GetCartItemViewModel>(oldCart);
                 }
                 return BadRequest("Failed to update database");
             }

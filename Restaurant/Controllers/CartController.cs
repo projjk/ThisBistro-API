@@ -59,17 +59,29 @@ namespace Restaurant.Controllers
                 {
                     return BadRequest("Menu doesn't exist");
                 }
-
-                var newCart = _mapper.Map<CartItem>(cart);
-                newCart.Menu = menu;
-                newCart.Quantity = 1;
-                _repository.Add(newCart);
+                
                 //////////////@todo register this to the current user's carts collection
                 var user = await _repository.GetUserAsync(new Guid("9bac3a17-e096-4467-84ed-5790e26beb45")); // @todo should get the current user
                 if (user == null)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, "Unable to find the user");
                 }
+                
+                var oldCart = await _repository.GetCartItemByMenuIdAsync(cart.MenuId);
+                if (oldCart != null)
+                {
+                    oldCart.Quantity++;
+                    if (await _repository.SaveChangesAsync())
+                    {
+                        return Ok(_mapper.Map<GetCartItemViewModel>(oldCart));
+                    }
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Failed to edit a Cart");
+                }
+                
+                var newCart = _mapper.Map<CartItem>(cart);
+                newCart.Menu = menu;
+                newCart.Quantity = 1;
+                _repository.Add(newCart);
                 user.CartItems.Add(newCart);
 
                 if (await _repository.SaveChangesAsync())

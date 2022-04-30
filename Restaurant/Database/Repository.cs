@@ -115,7 +115,16 @@ public class Repository : IRepository
         return await _context.CartItems
             .Include(c => c.Menu)
             .Include(c => c.User)
-            .FirstAsync(c => c.Id == id);
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+    
+    public async Task<CartItem?> GetCartItemByMenuIdAsync(int cartMenuId)
+    {
+        _logger.LogInformation($"Getting a CartItem by Menu #{cartMenuId}");
+        return await _context.CartItems
+            .Include(c => c.Menu)
+            .Include(c => c.User)
+            .FirstOrDefaultAsync(c => c.Menu.Id == cartMenuId);
     }
 
     public async Task<RestaurantConfig?> GetConfigAsync()
@@ -123,4 +132,6 @@ public class Repository : IRepository
         _logger.LogInformation($"Getting a RestaurantConfig");
         return await _context.RestaurantConfigs.FirstOrDefaultAsync();
     }
+
+
 }

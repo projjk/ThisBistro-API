@@ -24,4 +24,5 @@ public interface IRepository
     Task<IEnumerable<CartItem>> GetAllCartsAsync();
     Task<CartItem?> GetCartItemAsync(int id);
     Task<RestaurantConfig?> GetConfigAsync();
+    Task<CartItem?> GetCartItemByMenuIdAsync(int cartMenuId);
 }

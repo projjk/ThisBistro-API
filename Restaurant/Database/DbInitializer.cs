@@ -9,8 +9,8 @@ public static class DbInitializer
         {
             context.Database.EnsureCreated();
 
-            // Look for any Cart.
-            if (context.CartItems.Any())
+            // Look for any Menu or Category.
+            if (context.Menus.Any() || context.Categories.Any())
             {
                 return;   // DB has been seeded
             }

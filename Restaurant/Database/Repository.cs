@@ -94,7 +94,7 @@ public class Repository : IRepository
     {
         _logger.LogInformation("Getting all Orders");
 
-        return await _context.Orders.Include(o => o.OrderItems).ToArrayAsync();
+        return await _context.Orders.Include(o => o.OrderItems).ThenInclude(oi => oi.Menu).ToArrayAsync();
     }
 
     public async Task<Order?> GetOrderAsync(int id)

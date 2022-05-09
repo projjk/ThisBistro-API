@@ -4,7 +4,7 @@ They reset every 20 minutes, so feel free to test them!
 <img src="https://projectcode9.com/images/thisbistro1.jpg" width="270"> <img src="https://projectcode9.com/images/thisbistro2.jpg" width="270"> <img src="https://projectcode9.com/images/thisbistro3.jpg" width="270">
 
 A restaurant website developed with ASP.NET Core 6.0 Web API, Entity Framework 6 and PostgreSQL 14.  
-The frontend part is developed with Angular 13 and Bootstrap 5, and can be found [here](https://github.com/projjk/ThisBistro-ng)
+The frontend part is developed with Angular 13 and Bootstrap 5, and can be found [here](https://github.com/projjk/ThisBistro-ng).
 
 # Security
 - HTTPS Connection
